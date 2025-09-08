@@ -19,7 +19,16 @@ export class AppController {
     if (!phoneNumber) {
       // Handle jika nomor telepon tidak ada di URL
     }
-    await this.whatsappService.sendVerificationCode(phoneNumber);
-    return { success: true, message: 'Verification code sent.' };
+    const code = await this.whatsappService.sendVerificationCode(phoneNumber);
+    return { success: true, message: 'Verification code sent.', code };
+  }
+
+  @Get('/send')
+  async send(@Query('target') target: string, @Query('text') text: string) {
+    if (!target) {
+      // Handle jika nomor telepon tidak ada di URL
+    }
+    const code = await this.whatsappService.sendMessage(target, text);
+    return { success: true, message: 'Verification code sent.', code };
   }
 }

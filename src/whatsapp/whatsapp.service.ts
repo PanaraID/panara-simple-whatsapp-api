@@ -19,8 +19,7 @@ export class WhatsappService {
 
         // Event handler untuk pembaruan koneksi
         this.sock.ev.on('connection.update', async (update) => {
-            const { connection, lastDisconnect, qr: newQr } = update;
-
+            const { connection, lastDisconnect } = update;
 
             if (connection === 'close') {
                 const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
@@ -53,26 +52,19 @@ export class WhatsappService {
         });
     }
 
-    async sendVerificationCode(phoneNumber: string) {
+    async sendVerificationCode(phoneNumber: string): Promise<string> {
         // Meminta  code
         const code = await this.sock.requestPairingCode(phoneNumber);
-        console.log(code);
-
-        // 1. Generate kode OTP
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-        // 2. Simpan OTP di database dengan waktu kedaluwarsa (contoh: 5 menit)
-        // await this.redisService.set(`otp:${phoneNumber}`, otp, 300); // 300 detik
-
-        // 3. Kirim OTP melalui WhatsApp API
-        const message = `Kode verifikasi Anda adalah ${otp}. Jangan berikan kode ini kepada siapapun.`;
-        await this.sendMessage(phoneNumber + '@s.whatsapp.net', message);
+        return code;
     }
 
     // Contoh fungsi untuk mengirim pesan
     async sendMessage(jid: string, text: string) {
+        console.log("mengirim pesan");
         if (this.sock) {
-            await this.sock.sendMessage(jid, { text: text });
+            console.log("proses " + jid + "@s.whatsapp.net")
+            await this.sock.sendMessage(jid + "@s.whatsapp.net", { text: text });
         }
+        console.log("selesai")
     }
 }
