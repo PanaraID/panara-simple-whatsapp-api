@@ -2,9 +2,14 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { WinstonLogger } from './winston.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonLogger
+  });
+
+  app.useLogger(WinstonLogger);
 
   const config = new DocumentBuilder()
     .setTitle('Panara Simple WhatsApp API')
