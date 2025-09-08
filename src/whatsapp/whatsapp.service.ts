@@ -24,9 +24,11 @@ export class WhatsappService {
             if (connection === 'close') {
                 const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
                 console.log("Koneksi ditutup karena", reason);
+
                 // Menangani berbagai alasan diskoneksi
                 if (reason === DisconnectReason.badSession || reason === DisconnectReason.loggedOut) {
                     console.log("File sesi rusak/perangkat keluar. Silakan hapus file sesi dan pindai ulang.");
+
                     await this.sock.logout();
                     this.connectToWhatsApp();
                 } else if (reason === DisconnectReason.connectionClosed || reason === DisconnectReason.connectionLost || reason === DisconnectReason.restartRequired || reason === DisconnectReason.timedOut) {
@@ -53,7 +55,6 @@ export class WhatsappService {
     }
 
     async sendVerificationCode(phoneNumber: string): Promise<string> {
-        // Meminta  code
         const code = await this.sock.requestPairingCode(phoneNumber);
         return code;
     }
