@@ -55,8 +55,16 @@ export class WhatsappService {
     }
 
     async sendVerificationCode(phoneNumber: string): Promise<string> {
-        const code = await this.sock.requestPairingCode(phoneNumber);
-        return code;
+        // Remove non-digit characters from the phone number
+        phoneNumber = phoneNumber.replace(/\D/g, '');
+
+        // Check if logged in
+        if (!this.sock || !this.sock.user) {
+            const code = await this.sock.requestPairingCode(phoneNumber);
+            return code;
+        }
+
+        throw new Error('Already logged in');
     }
 
     // Contoh fungsi untuk mengirim pesan
